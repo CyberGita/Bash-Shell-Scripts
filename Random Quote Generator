@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Random Quote Generator
+# Version 2.0 - Configurable & Production-Ready
+
+# Configuration
+CONFIG_DIR="${HOME}/.quotegen"
+QUOTES_FILE="${CONFIG_DIR}/quotes.txt"
+COLOR_THEME="\033[1;36m"  # Cyan (Change to 31=Red, 32=Green, 35=Purple)
+
+# Initialize quotes file
+initialize_quotes() {
+    mkdir -p "${CONFIG_DIR}"
+    if [[ ! -f "${QUOTES_FILE}" ]]; then
+        echo "Be the change you wish to see in the world. - Mahatma Gandhi
+Stay hungry, stay foolish. - Steve Jobs
+The only way to do great work is to love what you do. - Steve Jobs" > "${QUOTES_FILE}"
+    fi
+}
+
+# Display random quote
+show_quote() {
+    local quote=$(shuf -n 1 "${QUOTES_FILE}")
+    echo -e "${COLOR_THEME}${quote}\033[0m"
+}
+
+# Main function
+main() {
+    initialize_quotes
+    echo -e "\n\033[1;34m=== Daily Inspiration ===\033[0m"
+    show_quote
+    echo -e "\033[1;34m=======================\033[0m\n"
+}
+
+# Handle command line arguments
+case "$1" in
+    "--add")
+        echo "$2" >> "${QUOTES_FILE}"
+        echo "Quote added successfully!"
+        ;;
+    "--help")
+        echo "Usage: quotegen [OPTION]"
+        echo "Options:"
+        echo "  --add 'New quote'  Add a new quote"
+        echo "  --help             Show this help"
+        ;;
+    *)
+        main
+        ;;
+esac
